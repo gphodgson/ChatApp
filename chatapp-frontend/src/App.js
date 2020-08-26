@@ -6,6 +6,7 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Header from './components/layout/Header';
+import Footer from './components/layout/Footer';
 
 import Chats from './components/Chats';
 import AddChat from './components/addChat';
@@ -49,6 +50,7 @@ export class App extends Component {
               <AddChat className="chatBox" newChat={this.newChat}/>
             </React.Fragment>
           )}></Route>
+          <Footer />
         </div>
       </Router>
     )

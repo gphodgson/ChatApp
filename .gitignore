@@ -1,3 +1,4 @@
 /chatapp-api/node_modules
 /chatapp-api/keys
 /chatapp-frontend/node_modules
+/chatapp-frontend/build
