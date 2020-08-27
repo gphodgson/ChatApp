@@ -4,12 +4,14 @@ const app = express();
 const mysql = require('mysql');
 const fs = require("fs");
 const bodyParser = require("body-parser")
-const options = {
-    key: fs.readFileSync("/etc/letsencrypt/live/gh-api.com/privkey.pem"),
-    cert: fs.readFileSync("/etc/letsencrypt/live/gh-api.com/fullchain.pem")
-}
 
-console.log(options)
+const ssl_key = process.env.DEV ? process.env.SSL_KEY : "";
+const ssl_chain = process.env.DEV ? process.env.SSL_CHAIN : "";
+
+const options = {
+    key: ssl_key,
+    cert: ssl_chain
+}
 
 const https = require("https").createServer(options, app);
 const http = require("http").createServer(app);
@@ -33,7 +35,7 @@ db.connect((err) => {
     }
 });
 
-io.on('connection', (socket) => {
+onConnect = (socket) => {
     console.log('User Connected...')
     socket.on('disconnect', () => { 
         console.log('user disconnected');
@@ -42,28 +44,20 @@ io.on('connection', (socket) => {
     socket.on('sent', () => {
         console.log('user sent a message.');
         io.emit('update', {});
-        
     });
 
     socket.on('updated', () => {
         console.log('user updated chats...');
     });
+}
+
+
+io.on('connection', (socket) => {
+    onConnect(socket);
 });
 
 ioHttp.on('connection', (socket) => {
-    console.log('User Connected...')
-    socket.on('disconnect', () => {
-        console.log('user disconnected');
-    });
-
-    socket.on('sent', () => {
-        console.log('user sent a message.');
-        socket.broadcast.emit('update', {});
-    });
-
-    socket.on('updated', () => {
-        console.log('user updated chats...');
-    });
+    onConnect(socket);
 });
 
 app.get('/chatapp/getChats', (request, response) =>{
