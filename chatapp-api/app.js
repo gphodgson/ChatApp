@@ -45,13 +45,15 @@ app.get('/addChat', (request, response) => {
             text: post.text,
             sent_by: post.sent_by
         }
+	console.log("Added new chat:");
+	console.log(sendout);
         response.set('Access-Control-Allow-Origin', 'https://www.geoffhodgson.com');
         response.send(sendout);
     });
 });
 
-app.listen(process.env.PORT || '3001', () => {
-    console.log("Listening on port 3001...");
+app.listen('3001', () => {
+	console.log("Listening on port 1337...")
 });
 
-https.createServer(options, app).listen(3002);
+https.createServer(options, app).listen(process.env.PORT || '3002');
