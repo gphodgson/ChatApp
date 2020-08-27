@@ -2,3 +2,4 @@
 /chatapp-api/keys
 /chatapp-frontend/node_modules
 /chatapp-frontend/build
+*.env
