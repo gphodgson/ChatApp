@@ -5,12 +5,20 @@ const mysql = require('mysql');
 const fs = require("fs");
 const bodyParser = require("body-parser")
 
-const ssl_key = process.env.DEV ? process.env.SSL_KEY : "";
+const ssl_key = process.env.DEV ?  process.env.SSL_KEY : "";
 const ssl_chain = process.env.DEV ? process.env.SSL_CHAIN : "";
 
-const options = {
-    key: fs.readFileSync(ssl_key),
-    cert: fs.readFileSync(ssl_chain)
+var options;
+try{
+    options = {
+        key: fs.readFileSync(ssl_key),
+        cert: fs.readFileSync(ssl_chain)
+    }
+}catch{
+    options = {
+        key: '',
+        cert: ''    
+    }
 }
 
 const https = require("https").createServer(options, app);
