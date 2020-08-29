@@ -9,8 +9,8 @@ const ssl_key = process.env.DEV ? process.env.SSL_KEY : "";
 const ssl_chain = process.env.DEV ? process.env.SSL_CHAIN : "";
 
 const options = {
-    key: ssl_key,
-    cert: ssl_chain
+    key: fs.readFileSync(ssl_key),
+    cert: fs.readFileSync(ssl_chain)
 }
 
 const https = require("https").createServer(options, app);
