@@ -5,8 +5,10 @@ const mysql = require('mysql');
 const fs = require("fs");
 const bodyParser = require("body-parser")
 
-const ssl_key = process.env.DEV ?  process.env.SSL_KEY : "";
-const ssl_chain = process.env.DEV ? process.env.SSL_CHAIN : "";
+const __dev__= process.env.DEV;
+
+const ssl_key = __dev__ ?  process.env.SSL_KEY : "";
+const ssl_chain = __dev__ ? process.env.SSL_CHAIN : "";
 
 var options;
 try{
@@ -37,25 +39,23 @@ const db = mysql.createConnection({
 //connect
 db.connect((err) => {
     if(err){
+        console.log(`Database (${process.env.DB_DATABASE}) connection failed.`)
         throw err;
     }else{
-        console.log('Database (' + process.env.DB_DATABASE + ') connection successful.');
+        console.log(`Database (${process.env.DB_DATABASE}) connection successful.`);
     }
 });
 
 onConnect = (socket) => {
-    console.log('User Connected...')
-    socket.on('disconnect', () => { 
-        console.log('user disconnected');
-    });
+    console.log('User Connected...');
 
     socket.on('sent', () => {
-        console.log('user sent a message.');
+        if(__dev__) console.log('user sent a message.');
         io.emit('update', {});
     });
 
     socket.on('updated', () => {
-        console.log('user updated chats...');
+        if(__dev__) console.log('user updated chats...');
     });
 }
 
@@ -72,6 +72,9 @@ app.get('/chatapp/getChats', (request, response) =>{
     let sql = "SELECT * FROM chats";
     db.query(sql, (err, result) => {
         if(err) throw err;
+        
+        if(__dev__) console.log(result);
+
         response.set('Access-Control-Allow-Origin', process.env.ACCESS_CONTROL);
         response.send(result);
     });
@@ -81,13 +84,16 @@ app.get('/chatapp/addChat', (request, response) => {
     let post = {text: request.query.text, sent_by: request.query.sent_by};
     let sql = "INSERT INTO chats SET ?";
     db.query(sql, post, (err, result) => {
+        if(err) throw err;
+
         let sendout = {
             chat_id: result.insertId,
             text: post.text,
             sent_by: post.sent_by
         }
-        console.log("Added new chat:");
-        console.log(sendout);
+        
+        if(__dev__) console.log(`Added new chat:\n${sendout}`);
+
         response.set('Access-Control-Allow-Origin', process.env.ACCESS_CONTROL);
         response.send(sendout);
     });
@@ -96,9 +102,7 @@ app.get('/chatapp/addChat', (request, response) => {
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-http.listen('3001', () => {
-    console.log("Listening on 3001...")
-});
+http.listen('3001');
 
 if(!process.env.DEV === false)
 {
