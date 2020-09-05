@@ -3,7 +3,7 @@ import React from 'react'
 export default function Footer() {
     return (
         <div>
-            <footer style={footerStyle}>Created By: Geoff Hodgson | Created on August 21, 2020 | <a style={linkStyle} href="https://geoffhodgson.com">geoffhodgson.com</a></footer>
+            <footer style={footerStyle}>Created By: Geoff Hodgson | Created on August 21, 2020 | <a style={linkStyle} href="https://geoffhodgson.com">geoffhodgson.com</a> | <a style={linkStyle} href="https://github.com/payne1134/ChatApp">Github</a></footer>
         </div>
     )
 

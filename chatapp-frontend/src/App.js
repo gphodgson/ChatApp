@@ -22,14 +22,14 @@ export class App extends Component {
 
   newChat = (text, sent_by) => 
   {
-    Axios.get(process.env.REACT_APP_API_URI + 'addChat?text='+text+"&sent_by="+sent_by)
+    Axios.get(`${process.env.REACT_APP_API_URI}addChat?api_key=${process.env.REACT_APP_API_KEY}&text=${text}&sent_by=${sent_by}`)
     .then(res => this.setState({chats: [...this.state.chats, res.data]}))
     
     this.socket.emit('sent');
   }
 
   updateChats = async () => {
-    Axios.get(process.env.REACT_APP_API_URI + 'getChats')
+    Axios.get(`${process.env.REACT_APP_API_URI}getChats?api_key=${process.env.REACT_APP_API_KEY}`)
     .then(res => this.setState({chats: res.data}));
     this.socket.emit('updated');
   }
